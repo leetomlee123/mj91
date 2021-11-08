@@ -29,10 +29,10 @@ class Request {
       baseUrl: SERVER_API_URL,
 
       //连接服务器超时时间，单位是毫秒.
-      // connectTimeout: 20000,
+      connectTimeout: 20000,
 
       // 响应流上前后两次接受到数据的间隔，单位为毫秒。
-      // receiveTimeout: 5000,
+      receiveTimeout: 5000,
 
       // Http请求头.
       headers: {},

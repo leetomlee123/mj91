@@ -42,13 +42,13 @@ dependencies:
 
   # storage + cache
   shared_preferences: ^2.0.6
-  cached_network_image: ^3.0.0
+#  cached_network_image: ^3.0.0
 
   # 上拉刷新/下拉加载
   pull_to_refresh: ^2.0.0
 
   # webview
-  webview_flutter: ^2.0.8
+#  webview_flutter: ^2.0.8
 
   # 拍照/图片 相关
 #  image_picker: ^0.7.5+3

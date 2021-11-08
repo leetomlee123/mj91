@@ -4,7 +4,9 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mj91/components/card_title.dart';
 import 'package:readmore/readmore.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 import 'movie_detail_controller.dart';
 
@@ -18,7 +20,7 @@ class MovieDetailPage extends GetView<MovieDetailController> {
           return Scaffold(
             appBar: AppBar(
               title: Text(
-                Get.arguments['name'] ?? "",
+                controller.movieName,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -30,19 +32,19 @@ class MovieDetailPage extends GetView<MovieDetailController> {
                       padding: const EdgeInsets.all(20.0),
                       child: Column(
                         children: [
-                          _itemScaffold(
+                          card_title(
                             'Introduce',
                             _buildHead(),
                           ),
-                          _itemScaffold(
+                          card_title(
                             " Paradise Falls",
                             _buildDesc(),
                           ),
-                          _itemScaffold(
+                          card_title(
                             'Play online',
                             _buildItems(),
                           ),
-                          _itemScaffold(
+                          card_title(
                               'Video screenshot', _buildMovieHShortPics()),
                         ],
                       ),
@@ -51,41 +53,6 @@ class MovieDetailPage extends GetView<MovieDetailController> {
           );
         },
         init: MovieDetailController());
-  }
-
-  Widget _itemScaffold(String title, Widget child) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: Column(
-        children: [
-          Container(
-            height: 30,
-            child: Row(
-              children: [
-                VerticalDivider(
-                  color: Colors.blue,
-                  width: 10,
-                  thickness: 6,
-                  indent: 2,
-                  endIndent: 2,
-                ),
-                SizedBox(
-                  width: 1,
-                ),
-                Text(
-                  title,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          child
-        ],
-      ),
-    );
   }
 
   Widget _buildHead() {
@@ -132,34 +99,30 @@ class MovieDetailPage extends GetView<MovieDetailController> {
   }
 
   Widget _buildItems() {
-    return Container(
-      height: 40,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemExtent: 120,
-        itemBuilder: (c, i) {
-          var item = controller.movieDetailModel!.items![i];
-          return Obx(() => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: TextButton(
-                    style: ButtonStyle(
-                        shape: MaterialStateProperty.all(
-                      RoundedRectangleBorder(
-                        side: BorderSide(
-                          width: 1.5,
-                          color: controller.index.value == i
-                              ? Colors.blue
-                              : Color(0xFFB4B4B4),
-                        ),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                    )),
-                    onPressed: () => controller.play(i),
-                    child: Text(item.name?.trim() ?? "")),
-              ));
-        },
-        itemCount: controller.movieDetailModel!.items!.length,
+    return WaterfallFlow.builder(
+      shrinkWrap: true,
+      gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        crossAxisSpacing: 10.0,
+        mainAxisSpacing: 10.0,
       ),
+      itemBuilder: (c, i) {
+        var item = controller.movieDetailModel!.items![i];
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: TextButton(
+              style: ButtonStyle(
+                  shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(
+                  side: BorderSide(width: 1.5, color: Colors.blue),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              )),
+              onPressed: () => controller.play(i),
+              child: Text(item.name?.trim() ?? "")),
+        );
+      },
+      itemCount: controller.movieDetailModel!.items!.length,
     );
   }
 

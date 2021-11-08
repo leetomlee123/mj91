@@ -8,12 +8,14 @@ import 'package:mj91/services/movie.dart';
 class MovieDetailController extends GetxController {
   final count = 0.obs;
   var index = (-1).obs;
+  var movieName="";
   MovieDetailModel? movieDetailModel;
 
   @override
   void onInit() {
     super.onInit();
     var key = Get.arguments['key'];
+    movieName = Get.arguments['name'];
 
     initData(key);
   }

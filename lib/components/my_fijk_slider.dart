@@ -95,10 +95,10 @@ class _NewFijkSliderState extends State<NewFijkSlider> {
 /// Colors for the FijkSlider
 class NewFijkSliderColors {
   const NewFijkSliderColors({
-    this.playedColor = const Color.fromRGBO(255, 0, 0, 0.6),
-    this.bufferedColor = const Color.fromRGBO(50, 50, 100, 0.4),
+    this.playedColor = Colors.white,
+    this.bufferedColor = Colors.white38,
     this.cursorColor = const Color.fromRGBO(255, 0, 0, 0.8),
-    this.baselineColor = const Color.fromRGBO(200, 200, 200, 0.5),
+    this.baselineColor = Colors.white24,
   });
 
   final Color playedColor;
@@ -180,13 +180,13 @@ class _SliderPainter extends CustomPainter {
     }
 
     // draw circle cursor
-    pt.color = colors.cursorColor;
-    pt.color = pt.color.withAlpha(max(0, pt.color.alpha - 50));
-    radius = min(size.height / 2, dragging ? 12 : 8);
-    canvas.drawCircle(Offset(value, size.height / 2), radius, pt);
-    pt.color = colors.cursorColor;
-    radius = min(size.height / 2, dragging ? 12 : 6);
-    canvas.drawCircle(Offset(value, size.height / 2), radius, pt);
+    // pt.color = colors.cursorColor;
+    // pt.color = pt.color.withAlpha(max(0, pt.color.alpha - 50));
+    // radius = min(size.height / 2, dragging ? 12 : 8);
+    // // canvas.drawCircle(Offset(value, size.height / 2), radius, pt);
+    // pt.color = colors.cursorColor;
+    // radius = min(size.height / 2, dragging ? 12 : 6);
+    // canvas.drawCircle(Offset(value, size.height / 2), radius, pt);
   }
 
   @override

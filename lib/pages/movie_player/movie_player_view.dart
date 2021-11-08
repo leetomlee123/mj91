@@ -3,8 +3,10 @@ import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mj91/components/card_title.dart';
 import 'package:mj91/components/my_fijkplayer_skin.dart';
 import 'package:mj91/utils/screen_device.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 import 'movie_player_controller.dart';
 
@@ -14,29 +16,33 @@ class MoviePlayerPage extends GetView<MoviePlayerController> {
 
   @override
   Widget build(BuildContext context) {
-
     widthPic = getDeviceWidth(context) / 2.5;
     return GetBuilder(
       builder: (builder) {
-        return controller.playMovieModel == null
-            ? Container()
-            : ExtendedNestedScrollView(
-                body: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: _buildItems(),
-                      ),
-                      _buildLike()
-                    ],
-                  ),
+        if (controller.playMovieModel == null) {
+          return Container();
+        } else {
+          return ExtendedNestedScrollView(
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    _buildItems(),
+                    card_title("EveryUpdate",
+                        _buildMore(controller.playMovieModel!.everyUpdate)),
+                    card_title(
+                        "Likes", _buildMore(controller.playMovieModel!.likes))
+                  ],
                 ),
-                headerSliverBuilder:
-                    (BuildContext context, bool innerBoxIsScrolled) {
-                  return [_buildPlayer()];
-                },
-              );
+              ),
+            ),
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return [_buildPlayer()];
+            },
+          );
+        }
       },
       init: MoviePlayerController(),
     );
@@ -46,12 +52,11 @@ class MoviePlayerPage extends GetView<MoviePlayerController> {
     return SliverAppBar(
       pinned: true,
       backgroundColor: Colors.black,
-      toolbarHeight: 290 - kToolbarHeight,
+      toolbarHeight: 310 - kToolbarHeight,
       automaticallyImplyLeading: false,
       flexibleSpace: Padding(
         padding: const EdgeInsets.only(top: kToolbarHeight),
         child: FijkView(
-          height: 290,
           color: Colors.black,
           fit: FijkFit.cover,
           player: controller.player,
@@ -83,102 +88,99 @@ class MoviePlayerPage extends GetView<MoviePlayerController> {
   }
 
   Widget _buildItems() {
-    List<Widget> wds = [];
-    var items = controller.items;
-    for (var i = 0; i < items!.length; i++) {
-      var item = items[i];
-      wds.add(Padding(
-        padding: EdgeInsets.only(left: 5, right: 5),
-        child: ElevatedButton(
-          style: ButtonStyle(
-            shape: MaterialStateProperty.all(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+
+    return WaterfallFlow.builder(
+      shrinkWrap: true,
+      gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        crossAxisSpacing: 5.0,
+        mainAxisSpacing: 5.0,
+      ),
+      itemBuilder: (c, i) {
+        var item = controller.items![i];
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: ElevatedButton(
+              style: ButtonStyle(
+                shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                elevation: MaterialStateProperty.all(0),
+                backgroundColor: MaterialStateProperty.all(
+                    controller.index.value == i ? Colors.red : Colors.blue),
               ),
-            ),
-            elevation: MaterialStateProperty.all(0),
-            backgroundColor: MaterialStateProperty.all(
-                controller.index == i ? Colors.red : Colors.blue),
-          ),
-          onPressed: () {
-            // 切换播放源
-            controller.changeCurPlayVideo(i);
-          },
-          child: Text(
-            item.name!.trim(),
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ));
-    }
-    return Center(
-        child: Wrap(
-      children: wds,
-      runSpacing: 5,
-      spacing: 5,
-    ));
+              onPressed: () => controller.changeCurPlayVideo(i),
+              child: Text(item.name?.trim() ?? "")),
+        );
+      },
+      itemCount: controller.items!.length,
+    );
   }
 
-  Widget _buildLike() {
-    List<Widget> wds = [];
-    var everyUpdate = controller.playMovieModel!.likes;
-    for (var i = 0; i < everyUpdate!.length; i++) {
-      var e = everyUpdate[i];
-      wds.add(GestureDetector(
-        onTap: () {
-          controller.movieDetailController!.initData(e.id);
-          Get.offNamed("/movie/detail", arguments: {"name": e.name});
+  Widget _buildMore(var data) {
+    return Container(
+      height: 100,
+      child: ListView.builder(
+        shrinkWrap: true,
+        itemBuilder: (c, i) {
+          var e = data[i];
+          return GestureDetector(
+            onTap: () {
+              controller.movieDetailController!.initData(e.id);
+              controller.movieDetailController!.movieName = e.name;
+
+              Get.offNamed("/movie/detail", arguments: {"name": e.name});
+            },
+            child: Container(
+              margin: EdgeInsets.all(5.0),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  child: Stack(
+                    children: <Widget>[
+                      ExtendedImage.network(
+                        e.cover ?? "",
+                        width: widthPic,
+                        fit: BoxFit.fitWidth,
+                        height: widthPic * .6,
+                      ),
+                      Positioned(
+                        bottom: 0.0,
+                        left: 0.0,
+                        right: 0.0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Color.fromARGB(200, 0, 0, 0),
+                                Color.fromARGB(0, 0, 0, 0)
+                              ],
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                            ),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 10.0, horizontal: 20.0),
+                          child: Text(
+                            ' ${e.name ?? ""}',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14.0,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )),
+            ),
+          );
         },
-        child: Container(
-          margin: EdgeInsets.all(5.0),
-          child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(5.0)),
-              child: Stack(
-                children: <Widget>[
-                  ExtendedImage.network(
-                    e.cover ?? "",
-                    width: widthPic,
-                    fit: BoxFit.fitWidth,
-                    height: widthPic * .6,
-                  ),
-                  Positioned(
-                    bottom: 0.0,
-                    left: 0.0,
-                    right: 0.0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Color.fromARGB(200, 0, 0, 0),
-                            Color.fromARGB(0, 0, 0, 0)
-                          ],
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                        ),
-                      ),
-                      padding: EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 20.0),
-                      child: Text(
-                        ' ${e.name ?? ""}',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14.0,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ),
-                ],
-              )),
-        ),
-      ));
-    }
-    return Wrap(
-      spacing: 20,
-      children: wds,
+        itemCount: data.length,
+        scrollDirection: Axis.horizontal,
+      ),
     );
   }
 }

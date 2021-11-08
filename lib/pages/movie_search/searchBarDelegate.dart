@@ -49,39 +49,20 @@ class searchBarDelegate extends SearchDelegate<String> {
         margin: const EdgeInsets.symmetric(horizontal: 5.0),
         child: ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(5.0)),
-            child: Stack(
+            child: Column(
               children: <Widget>[
                 ExtendedImage.network(
                   movieModel.cover ?? "",
+                  height: 150,
                 ),
-                Positioned(
-                  bottom: 0.0,
-                  left: 0.0,
-                  right: 0.0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Color.fromARGB(200, 0, 0, 0),
-                          Color.fromARGB(0, 0, 0, 0)
-                        ],
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                      ),
-                    ),
-                    padding:
-                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                    child: Text(
-                      ' ${movieModel.name ?? ""}',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14.0,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                Text(
+                  ' ${movieModel.name ?? ""}',
+                  style: TextStyle(
+                    fontSize: 14.0,
                   ),
-                ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                )
               ],
             )),
       ),
@@ -100,7 +81,6 @@ class searchBarDelegate extends SearchDelegate<String> {
             case ConnectionState.waiting:
             // 连接到异步任务并等待进行交互
             case ConnectionState.active:
-              print("--------->loading");
               return Container(
                 child: Center(
                   child: Text("加载数据中..."),
@@ -108,9 +88,7 @@ class searchBarDelegate extends SearchDelegate<String> {
               );
             // 连接到异步任务并开始交互
             case ConnectionState.done:
-              print("--------->done");
               if (snapshot.hasError) {
-                print("--------->error");
                 return Container(
                   child: Center(
                     child: Text("加载数据失败"),

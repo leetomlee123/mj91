@@ -11,7 +11,6 @@ import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:mj91/components/my_fijk_slider.dart';
 import 'package:mj91/pages/movie_detail/movie_detail_model.dart';
 import 'package:mj91/pages/movie_player/movie_player_controller.dart';
-import 'package:wakelock/wakelock.dart';
 
 double speed = 1.0;
 bool lockStuff = false;
@@ -130,7 +129,6 @@ class _CustomFijkPanelState extends State<CustomFijkPanel>
       changeCurPlayVideo(curActiveIdx);
     }
     player.addListener(_playerValueChanged);
-    Wakelock.enable();
   }
 
   @override
@@ -146,7 +144,6 @@ class _CustomFijkPanelState extends State<CustomFijkPanel>
     player.removeListener(_playerValueChanged);
     _tabController.dispose();
     _animationController!.dispose();
-    Wakelock.disable();
     super.dispose();
   }
 
@@ -188,6 +185,7 @@ class _CustomFijkPanelState extends State<CustomFijkPanel>
   // 切换播放源
   Future<void> changeCurPlayVideo(var activeIdx) async {
     // await player.stop();
+
     await player.reset().then((_) async {
       await find.getVideoResourceUrl(activeIdx);
 
@@ -399,15 +397,15 @@ class _CustomFijkPanelState extends State<CustomFijkPanel>
                             _buildTopBackBtn(),
                             Expanded(
                               child: Container(
-                                child: Obx(() => Text(
-                                      find.items![find.index.value].name ?? "",
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    )),
+                                child: Text(
+                                  find.title(),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
                               ),
                             ),
                           ],
@@ -751,10 +749,7 @@ class _buildGestureDetectorState extends State<_buildGestureDetector> {
         _duration = value.duration;
       });
     }
-    print('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
-    print('++++++++ 是否开始播放 => ${value.state == FijkState.started} ++++++++');
-    print('+++++++++++++++++++ 播放器状态 => ${value.state} ++++++++++++++++++++');
-    print('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
+
     // 新状态
     bool playing = value.state == FijkState.started;
     bool prepared = value.prepared;
@@ -921,6 +916,7 @@ class _buildGestureDetectorState extends State<_buildGestureDetector> {
         curTabActiveUrl,
         autoPlay: true,
       );
+      Get.log("title:${find.title()}");
       // 回调
     });
   }
@@ -1058,8 +1054,6 @@ class _buildGestureDetectorState extends State<_buildGestureDetector> {
                               padding: EdgeInsets.only(right: 5, left: 5),
                               child: NewFijkSlider(
                                 colors: NewFijkSliderColors(
-                                  cursorColor: Colors.blue,
-                                  playedColor: Colors.blue,
                                 ),
                                 onChangeEnd: (double value) {},
                                 value: 0,
@@ -1072,8 +1066,7 @@ class _buildGestureDetectorState extends State<_buildGestureDetector> {
                               padding: EdgeInsets.only(right: 5, left: 5),
                               child: NewFijkSlider(
                                 colors: NewFijkSliderColors(
-                                  cursorColor: Colors.blue,
-                                  playedColor: Colors.blue,
+
                                 ),
                                 value: currentValue,
                                 cacheValue:
@@ -1261,15 +1254,15 @@ class _buildGestureDetectorState extends State<_buildGestureDetector> {
                     _buildTopBackBtn(),
                     Expanded(
                       child: Container(
-                        child: Obx(() => Text(
-                              find.items![find.index.value].name ?? "",
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                            )),
+                        child: Text(
+                          find.title(),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     )
                   ],
