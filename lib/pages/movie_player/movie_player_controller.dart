@@ -55,8 +55,9 @@ class MoviePlayerController extends FullLifeCycleController with FullLifeCycle {
     playMovieModel = await MovieApi.playMovie(key);
     update();
     var value = await DataBaseProvider.dbProvider.getMovieRecordWithId(key);
+    var position2 = value?.position ?? 0;
     await player.setOption(
-        FijkOption.playerCategory, 'seek-at-start', value?.position ?? 0);
+        FijkOption.playerCategory, 'seek-at-start', max(position2 - 3000, 0));
   }
 
 // 切换播放源

@@ -1,7 +1,6 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:loadmore/loadmore.dart';
 import 'package:mj91/pages/movie/movie_model.dart';
 import 'package:mj91/router/app_pages.dart';
 import 'package:mj91/services/movie.dart';

@@ -185,7 +185,7 @@ class _CustomFijkPanelState extends State<CustomFijkPanel>
   // 切换播放源
   Future<void> changeCurPlayVideo(var activeIdx) async {
     // await player.stop();
-find.savePosition();
+    find.savePosition();
     await player.reset().then((_) async {
       await find.getVideoResourceUrl(activeIdx);
 
@@ -911,7 +911,9 @@ class _buildGestureDetectorState extends State<_buildGestureDetector> {
     player.reset().then((_) async {
       _speed = speed = 1.0;
 
-      String curTabActiveUrl = await find.getVideoResourceUrl(activeIdx);
+      await find.getVideoResourceUrl(activeIdx);
+
+      String curTabActiveUrl = find.playMovieModel!.resource ?? "";
       player.setDataSource(
         curTabActiveUrl,
         autoPlay: true,
@@ -1053,8 +1055,7 @@ class _buildGestureDetectorState extends State<_buildGestureDetector> {
                             child: Padding(
                               padding: EdgeInsets.only(right: 5, left: 5),
                               child: NewFijkSlider(
-                                colors: NewFijkSliderColors(
-                                ),
+                                colors: NewFijkSliderColors(),
                                 onChangeEnd: (double value) {},
                                 value: 0,
                                 onChanged: (double value) {},
@@ -1065,9 +1066,7 @@ class _buildGestureDetectorState extends State<_buildGestureDetector> {
                             child: Padding(
                               padding: EdgeInsets.only(right: 5, left: 5),
                               child: NewFijkSlider(
-                                colors: NewFijkSliderColors(
-
-                                ),
+                                colors: NewFijkSliderColors(),
                                 value: currentValue,
                                 cacheValue:
                                     _bufferPos.inMilliseconds.toDouble(),

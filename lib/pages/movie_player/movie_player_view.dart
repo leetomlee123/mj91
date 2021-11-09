@@ -94,11 +94,15 @@ class MoviePlayerPage extends GetView<MoviePlayerController> {
     return Row(
       children: [
         SizedBox(
-          width: 10,
+          width: 5,
         ),
-        Text(
-          controller.movieDetailController!.movieName,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+        SizedBox(
+          width: 250,
+          child: Text(
+            controller.movieDetailController!.movieName,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
         Spacer(),
         // IconButton(
