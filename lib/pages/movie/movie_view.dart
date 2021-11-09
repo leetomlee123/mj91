@@ -75,6 +75,7 @@ class MoviePage extends GetView<MovieController> {
       var value = skip.elementAt(i);
 
       bodies.add(Column(
+
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
@@ -84,9 +85,10 @@ class MoviePage extends GetView<MovieController> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
               ),
               Spacer(),
-              TextButton(onPressed: () {}, child: Text("see more"))
+              // TextButton(onPressed: () {}, child: Text("see more"))
             ],
           ),
+          SizedBox(height: 5,),
           Container(
             height: 200 * aspect,
             child: ListView.builder(
@@ -98,7 +100,9 @@ class MoviePage extends GetView<MovieController> {
               itemCount: value.length,
               scrollDirection: Axis.horizontal,
             ),
-          )
+          ),
+          SizedBox(height: 15,),
+
         ],
       ));
     }

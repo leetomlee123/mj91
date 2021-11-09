@@ -32,20 +32,17 @@ class MovieDetailPage extends GetView<MovieDetailController> {
                       padding: const EdgeInsets.all(20.0),
                       child: Column(
                         children: [
+                          _buildHead(),
                           card_title(
-                            'Introduce',
-                            _buildHead(),
-                          ),
-                          card_title(
-                            " Paradise Falls",
+                            "简介",
                             _buildDesc(),
                           ),
                           card_title(
-                            'Play online',
+                            '在线播放',
                             _buildItems(),
                           ),
                           card_title(
-                              'Video screenshot', _buildMovieHShortPics()),
+                              '影片截图', _buildMovieHShortPics()),
                         ],
                       ),
                     ),
@@ -89,7 +86,7 @@ class MovieDetailPage extends GetView<MovieDetailController> {
     log(controller.movieDetailModel?.desc!.trim() ?? "");
     return ReadMoreText(
       controller.movieDetailModel?.desc ?? "",
-      trimLines: 2,
+      trimLines: 3,
       style: TextStyle(color: Colors.black),
       colorClickableText: Colors.blue,
       trimMode: TrimMode.Line,

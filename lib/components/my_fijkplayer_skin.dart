@@ -185,7 +185,7 @@ class _CustomFijkPanelState extends State<CustomFijkPanel>
   // 切换播放源
   Future<void> changeCurPlayVideo(var activeIdx) async {
     // await player.stop();
-
+find.savePosition();
     await player.reset().then((_) async {
       await find.getVideoResourceUrl(activeIdx);
 
@@ -319,7 +319,7 @@ class _CustomFijkPanelState extends State<CustomFijkPanel>
       body: Center(
         child: Container(
           height: MediaQueryData.fromWindow(window).size.width,
-          color: Color.fromRGBO(0, 0, 0, 0.5),
+          // color: Color.fromRGBO(0, 0, 0, 0.5),
           child: SingleChildScrollView(
             child: Wrap(
               runSpacing: 5,
@@ -383,7 +383,6 @@ class _CustomFijkPanelState extends State<CustomFijkPanel>
                     top: 0,
                     right: 0,
                     child: Container(
-                      color: Colors.red,
                       height: showConfig.stateAuto &&
                               !widget.player.value.fullScreen
                           ? barFillingHeight
@@ -908,6 +907,7 @@ class _buildGestureDetectorState extends State<_buildGestureDetector> {
     setState(() {
       _buffering = false;
     });
+    find.savePosition();
     player.reset().then((_) async {
       _speed = speed = 1.0;
 

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:fijkplayer/fijkplayer.dart';
@@ -28,11 +30,12 @@ class MoviePlayerPage extends GetView<MoviePlayerController> {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
+                    _buildTitle(context),
                     _buildItems(),
-                    card_title("EveryUpdate",
+                    card_title("每日更新",
                         _buildMore(controller.playMovieModel!.everyUpdate)),
                     card_title(
-                        "Likes", _buildMore(controller.playMovieModel!.likes))
+                        "猜你喜欢", _buildMore(controller.playMovieModel!.likes))
                   ],
                 ),
               ),
@@ -87,33 +90,92 @@ class MoviePlayerPage extends GetView<MoviePlayerController> {
     );
   }
 
-  Widget _buildItems() {
+  Widget _buildTitle(var context) {
+    return Row(
+      children: [
+        SizedBox(
+          width: 10,
+        ),
+        Text(
+          controller.movieDetailController!.movieName,
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+        ),
+        Spacer(),
+        // IconButton(
+        //   onPressed: () {
+        //     Get.bottomSheet(_buildBottomSheet(),backgroundColor: Colors.blueGrey);
+        //   },
+        //   icon: Icon(Icons.download),
+        // ),
+        _popupMenuButton(context)
+      ],
+    );
+  }
 
+  Widget _buildBottomSheet() {
+    return Container(
+      child: ListView.builder(
+        itemBuilder: (c, i) {
+          var item = controller.items![i];
+          return CheckboxListTile(
+            title: Text(item.name ?? ""),
+            onChanged: (bool? value) {},
+            value: true,
+          );
+        },
+        itemCount: controller.items!.length,
+      ),
+    );
+  }
+
+  PopupMenuButton _popupMenuButton(BuildContext context) {
+    return PopupMenuButton(
+      itemBuilder: (BuildContext context) {
+        return [
+          PopupMenuItem(
+            child: Text("DOTA"),
+            value: "dota",
+          ),
+          PopupMenuItem(
+            child: Text("英雄联盟"),
+            value: ["盖伦", "皇子", "提莫"],
+          ),
+          PopupMenuItem(
+            child: Text("王者荣耀"),
+            value: {"name": "王者荣耀"},
+          ),
+        ];
+      },
+      onSelected: (var value) {
+        log(value);
+      },
+    );
+  }
+
+  Widget _buildItems() {
     return WaterfallFlow.builder(
       shrinkWrap: true,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
       gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        crossAxisSpacing: 5.0,
+        crossAxisSpacing: 10.0,
         mainAxisSpacing: 5.0,
       ),
       itemBuilder: (c, i) {
         var item = controller.items![i];
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: ElevatedButton(
-              style: ButtonStyle(
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+        return ElevatedButton(
+            style: ButtonStyle(
+              shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                elevation: MaterialStateProperty.all(0),
-                backgroundColor: MaterialStateProperty.all(
-                    controller.index.value == i ? Colors.red : Colors.blue),
               ),
-              onPressed: () => controller.changeCurPlayVideo(i),
-              child: Text(item.name?.trim() ?? "")),
-        );
+              elevation: MaterialStateProperty.all(0),
+              backgroundColor: MaterialStateProperty.all(
+                  controller.index.value == i ? Colors.red : Colors.blue),
+            ),
+            onPressed: () => controller.changeCurPlayVideo(i),
+            child: Text(item.name?.trim() ?? ""));
       },
       itemCount: controller.items!.length,
     );

@@ -63,6 +63,8 @@ dependencies:
   extended_nested_scroll_view: ^5.0.0
   loadmore: ^2.0.1
   waterfall_flow: ^3.0.1
+  sqflite: ^2.0.0+4
+  path_provider: ^2.0.6
 
   carousel_slider: ^4.0.0
 

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:get/get.dart';
 import 'package:mj91/components/my_fijkplayer_skin.dart';
@@ -5,6 +7,7 @@ import 'package:mj91/pages/movie_detail/movie_detail_controller.dart';
 import 'package:mj91/pages/movie_detail/movie_detail_model.dart';
 import 'package:mj91/pages/movie_player/movie_player_model.dart';
 import 'package:mj91/services/movie.dart';
+import 'package:mj91/utils/database_provider.dart';
 import 'package:wakelock/wakelock.dart';
 
 class MoviePlayerController extends FullLifeCycleController with FullLifeCycle {
@@ -25,16 +28,18 @@ class MoviePlayerController extends FullLifeCycleController with FullLifeCycle {
     speed = 1.0;
     player.setOption(FijkOption.hostCategory, "request-screen-on", 1);
     player.setOption(FijkOption.hostCategory, "enable-snapshot", 1);
-    player.setOption(FijkOption.formatCategory, "reconnect", 1);
-    player.setOption(
-        FijkOption.playerCategory, "max-buffer-size", 10 * 1024 * 1024);
-    player.setOption(FijkOption.formatCategory, "probesize", 1024 * 10);
 
+    // player.setOption(
+    //     FijkOption.playerCategory, "max-buffer-size", 200 * 1024 * 1024);
+    // player.setOption(FijkOption.playerCategory, "infbuf", 1);
+    // player.setOption(FijkOption.playerCategory, "max_cached_duration", 3000);
+    player.setOption(FijkOption.playerCategory, "enable-accurate-seek", 1);
+    player.setOption(FijkOption.playerCategory, "accurate-seek-timeout", 500);
+    player.setOption(FijkOption.formatCategory, "analyzeduration", 1);
+    player.setOption(FijkOption.formatCategory, "probesize", 1024 * 10);
     player.setOption(FijkOption.playerCategory, "min-frames", 100);
     // player.setOption(FijkOption.formatCategory, "headers", PLAYER_REQ_HEADERS);
-    // player.onBufferPosUpdate.listen((v) {
-    //   print(v);
-    // });
+
     movieDetailController = Get.find<MovieDetailController>();
     index.value = Get.arguments['index'];
     items = movieDetailController?.movieDetailModel!.items;
@@ -45,13 +50,18 @@ class MoviePlayerController extends FullLifeCycleController with FullLifeCycle {
     if (playMovieModel != null && activeIdx == index.value) return;
     index.value = activeIdx;
 
-    var key = movieDetailController?.movieDetailModel!.items![activeIdx].id;
+    var key = items![activeIdx].id;
+
     playMovieModel = await MovieApi.playMovie(key);
     update();
+    var value = await DataBaseProvider.dbProvider.getMovieRecordWithId(key);
+    await player.setOption(
+        FijkOption.playerCategory, 'seek-at-start', value?.position ?? 0);
   }
 
-  // 切换播放源
+// 切换播放源
   Future<void> changeCurPlayVideo(var activeIdx) async {
+    savePosition();
     await player.reset().then((_) async {
       await getVideoResourceUrl(activeIdx);
       String curTabActiveUrl = playMovieModel!.resource ?? "";
@@ -68,9 +78,22 @@ class MoviePlayerController extends FullLifeCycleController with FullLifeCycle {
   }
 
   @override
-  void onClose() {
+  void onClose() async {
+    super.onClose();
+    savePosition();
     player.release();
+
     Wakelock.disable();
+  }
+
+  savePosition() {
+    log(player.currentPos.inMilliseconds);
+    var items2 = items![index.value];
+    DataBaseProvider.dbProvider.addMovieRecord(MovieRecord(
+        name: items2.name,
+        id: items2.id,
+        position: player.currentPos.inMilliseconds,
+        cover: movieDetailController!.movieDetailModel!.cover));
   }
 
   onChangeVideo(int curTabIdx, int curActiveIdx) {}

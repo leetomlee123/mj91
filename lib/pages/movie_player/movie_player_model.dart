@@ -55,3 +55,42 @@ class EveryUpdate {
     return data;
   }
 }
+
+class MovieRecord {
+  String? cover;
+  String? id;
+  int? position;
+  String? name;
+
+  MovieRecord({this.cover, this.id, this.name, this.position});
+
+  MovieRecord.fromJson(Map<String, dynamic> json) {
+    cover = json['cover'];
+    id = json['id'];
+    name = json['name'];
+    position = json['position'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['cover'] = this.cover;
+    data['id'] = this.id;
+    data['name'] = this.name;
+    data['position'] = this.position;
+    return data;
+  }
+
+  Map<String, dynamic> toMap() =>
+      {
+        'cover': this.cover,
+        'id': this.id,
+        'name': this.name,
+        'position': this.position
+      };
+
+  factory MovieRecord.fromMap(Map<String, dynamic>json)=>
+      new MovieRecord(id: json["id"],
+          name: json["name"],
+          cover: json['cover'],
+          position: json['position']);
+}
