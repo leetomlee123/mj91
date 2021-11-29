@@ -124,10 +124,10 @@ class _CustomFijkPanelState extends State<CustomFijkPanel>
     // is not null
     if (_videos.length < 1) return null;
     // autoplay and existurl
-    if (showConfig.isAutoPlay && !_isPlaying) {
-      int curActiveIdx = widget.curActiveIdx ?? 0;
-      changeCurPlayVideo(curActiveIdx);
-    }
+    // if (showConfig.isAutoPlay && !_isPlaying) {
+    //   int curActiveIdx = widget.curActiveIdx ?? 0;
+    //   changeCurPlayVideo(curActiveIdx);
+    // }
     player.addListener(_playerValueChanged);
   }
 
@@ -189,11 +189,7 @@ class _CustomFijkPanelState extends State<CustomFijkPanel>
     await player.reset().then((_) async {
       await find.getVideoResourceUrl(activeIdx);
 
-      String curTabActiveUrl = find.playMovieModel!.resource ?? "";
-      player.setDataSource(
-        curTabActiveUrl,
-        autoPlay: true,
-      );
+   
       // 回调
       // widget.onChangeVideo!(activeIdx);
     });
@@ -913,12 +909,7 @@ class _buildGestureDetectorState extends State<_buildGestureDetector> {
 
       await find.getVideoResourceUrl(activeIdx);
 
-      String curTabActiveUrl = find.playMovieModel!.resource ?? "";
-      player.setDataSource(
-        curTabActiveUrl,
-        autoPlay: true,
-      );
-      Get.log("title:${find.title()}");
+
       // 回调
     });
   }

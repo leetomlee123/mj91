@@ -158,7 +158,7 @@ class _SliderPainter extends CustomPainter {
           Offset(0, size.height / 2 - lineHeight),
           Offset(value, size.height / 2 + lineHeight),
         ),
-        Radius.circular(radius),
+        Radius.circular(0),
       ),
       pt,
     );

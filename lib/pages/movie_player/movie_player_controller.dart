@@ -31,7 +31,7 @@ class MoviePlayerController extends FullLifeCycleController with FullLifeCycle {
 
     // player.setOption(
     //     FijkOption.playerCategory, "max-buffer-size", 200 * 1024 * 1024);
-    // player.setOption(FijkOption.playerCategory, "infbuf", 1);
+    player.setOption(FijkOption.playerCategory, "infbuf", 1);
     // player.setOption(FijkOption.playerCategory, "max_cached_duration", 3000);
     player.setOption(FijkOption.playerCategory, "enable-accurate-seek", 1);
     player.setOption(FijkOption.playerCategory, "accurate-seek-timeout", 500);
@@ -53,6 +53,7 @@ class MoviePlayerController extends FullLifeCycleController with FullLifeCycle {
     var key = items![activeIdx].id;
 
     playMovieModel = await MovieApi.playMovie(key);
+    player.setDataSource(playMovieModel!.resource??"",autoPlay: true);
     update();
     var value = await DataBaseProvider.dbProvider.getMovieRecordWithId(key);
     var position2 = value?.position ?? 0;

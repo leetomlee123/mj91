@@ -55,13 +55,13 @@ class MoviePlayerPage extends GetView<MoviePlayerController> {
     return SliverAppBar(
       pinned: true,
       backgroundColor: Colors.black,
-      toolbarHeight: 310 - kToolbarHeight,
+      toolbarHeight: 290 - kToolbarHeight,
       automaticallyImplyLeading: false,
       flexibleSpace: Padding(
         padding: const EdgeInsets.only(top: kToolbarHeight),
         child: FijkView(
           color: Colors.black,
-          fit: FijkFit.cover,
+          fit: FijkFit.fitWidth,
           player: controller.player,
           panelBuilder: (
             FijkPlayer player,
@@ -100,8 +100,9 @@ class MoviePlayerPage extends GetView<MoviePlayerController> {
           width: 250,
           child: Text(
             controller.movieDetailController!.movieName,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
             overflow: TextOverflow.ellipsis,
+            maxLines: 2,
           ),
         ),
         Spacer(),
